@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Autoscaling Calculator</title>
+    <style>
+        /* style.css */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+
+        .container {
+            width: 60%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type=number],
+        select,
+        button {
+            padding: 10px;
+            margin: 5px;
+            width: 90%;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #ddf;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Autoscaling Calculator</h1>
+        <form id="autoscalingForm">
+            <label for="users">Concurrent Users:</label>
+            <input type="number" id="users" name="users"><br><br>
+
+            <label for="appLoadSize">App Load Size:</label>
+            <select id="appLoadSize" name="appLoadSize">
+                <option value="Small">Small</option>
+                <option value="Medium">Medium</option>
+                <option value="Large">Large</option>
+            </select><br><br>
+
+            <label for="minTasks">Minimum # of Tasks per Service:</label>
+            <input type="number" id="minTasks" name="minTasks"><br><br>
+
+            <label for="desiredTasks">Desired # of Tasks per Service:</label>
+            <input type="number" id="desiredTasks" name="desiredTasks"><br><br>
+
+            <label for="maxTasks">Maximum # of Tasks per Service:</label>
+            <input type="number" id="maxTasks" name="maxTasks"><br><br>
+
+            <label for="vCPUPerTask">vCPU per Task:</label>
+            <input type="number" id="vCPUPerTask" name="vCPUPerTask" step="1"><br><br>
+
+            <label for="memoryPerTask">Memory per Task (MB):</label>
+            <input type="number" id="memoryPerTask" name="memoryPerTask" step="1"><br><br>
+
+            <input type="button" value="Calculate" onclick="calculateAutoscaling()">
+        </form>
+        <div id="result"></div>
+    </div>
+    <script>
+        function calculateAutoscaling() {
+            var appLoadSize = document.getElementById('appLoadSize').value;
+            var minTasks = parseInt(document.getElementById('minTasks').value);
+            var desiredTasks = parseInt(document.getElementById('desiredTasks').value);
+            var maxTasks = parseInt(document.getElementById('maxTasks').value);
+            var vCPUPerTask = parseInt(document.getElementById('vCPUPerTask').value);
+            var memoryPerTask = parseInt(document.getElementById('memoryPerTask').value);
+            var users = parseInt(document.getElementById('users').value);
+
+            // Base thresholds depending on App Load Size
+            var baseCpuThreshold, baseMemoryThreshold;
+            switch (appLoadSize) {
+                case "Small":
+                    baseCpuThreshold = 70; // Example: 70% for small load
+                    baseMemoryThreshold = 70; // Example: 70% for small load
+                    break;
+                case "Medium":
+                    baseCpuThreshold = 50; // Example: 50% for medium load
+                    baseMemoryThreshold = 50; // Example: 50% for medium load
+                    break;
+                case "Large":
+                    baseCpuThreshold = 30; // Example: 30% for large load
+                    baseMemoryThreshold = 30; // Example: 30% for large load
+                    break;
+            }
+
+            // Adjust thresholds based on task count and resource allocation
+            var scalingFactor = desiredTasks / minTasks;
+            var cpuThreshold = Math.max(baseCpuThreshold - (scalingFactor * (vCPUPerTask / users)), 10);
+            var memoryThreshold = Math.max(baseMemoryThreshold - (scalingFactor * (memoryPerTask / users)), 10);
+
+            // Display the result
+            var resultText = "Recommended CPU Threshold: " + cpuThreshold.toFixed(2) + "%<br>";
+            resultText += "Recommended Memory Threshold: " + memoryThreshold.toFixed(2) + "%";
+            document.getElementById('result').innerHTML = resultText;
+        }
+    </script>
+</body>
+
+</html>
