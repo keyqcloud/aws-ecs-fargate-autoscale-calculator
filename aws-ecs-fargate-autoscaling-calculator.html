@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VVXC65YW6G"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-VVXC65YW6G');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autoscaling Calculator</title>
+    <link rel="icon" sizes="16x16 24x24 32x32 64x64" href="https://cdn.keyqcloud.com/keyq/logo/favicon/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.keyqcloud.com/keyq/logo/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.keyqcloud.com/keyq/logo/favicon/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="https://cdn.keyqcloud.com/keyq/logo/favicon/favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="https://cdn.keyqcloud.com/keyq/logo/favicon/favicon-192x192.png">
+    <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="https://cdn.keyqcloud.com/keyq/logo/favicon/favicon-180x180.png">
+    <link rel="apple-touch-icon" type="image/png" sizes="167x167" href="https://cdn.keyqcloud.com/keyq/logo/favicon/favicon-167x167.png">
+    <link rel="apple-touch-icon" type="image/png" sizes="152x152" href="https://cdn.keyqcloud.com/keyq/logo/favicon/favicon-152x152.png">
+    <link rel="manifest" href="https://cdn.keyqcloud.com/keyq/logo/favicon/manifest.json">
+    <style>
+        /* style.css */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+
+        .container {
+            width: 60%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #keyq_logo {
+            width: 60%;
+            margin: 0 auto;
+        }
+
+        input[type=number],
+        select,
+        button {
+            padding: 10px;
+            margin: 5px;
+            width: 90%;
+            display: inline-block;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #ddf;
+        }
+
+        .input-row {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 10px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 10px;
+            width: 100%;
+        }
+
+        input[type=number],
+        select {
+            width: 90%;
+            /* Adjust as needed */
+            padding: 8px;
+        }
+
+        .disclaimer {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .disclaimer h2 {
+            color: #333;
+            font-size: 18px;
+        }
+
+        .disclaimer p {
+            font-size: 14px;
+            color: #666;
+            text-align: justify;
+        }
+
+        #contact {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-top: 1px solid #ccc;
+        }
+
+        #references {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-top: 1px solid #ccc;
+        }
+
+        #references h2 {
+            text-align: left;
+            color: #333;
+        }
+
+        #references ul {
+            text-align: left;
+            list-style-type: decimal;
+            padding: 0;
+        }
+
+        #references li {
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        #references a {
+            color: #06f;
+        }
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 30px;
+        }
+
+        .footer-container {
+            width: 80%;
+            margin: auto;
+        }
+
+        footer p {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <a href="https://www.keyq.cloud" target="_blank"><img id="keyq_logo" src="https://cdn.keyqcloud.com/keyq/logo/keyq_logo_horizontal_light.png" /></a>
+        <h1>Autoscaling Calculator</h1>
+        <h2>For AWS ECS Fargate</h2>
+        <form id="autoscalingForm">
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="users">Concurrent Users:</label>
+                    <input type="number" id="users" name="users">
+                </div>
+
+                <div class="input-group">
+                    <label for="appLoadSize">App Load Size:</label>
+                    <select id="appLoadSize" name="appLoadSize">
+                        <option value="Small">Small</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Large">Large</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="minTasks">Min # of Tasks per Service:</label>
+                    <input type="number" id="minTasks" name="minTasks">
+                </div>
+
+                <div class="input-group">
+                    <label for="desiredTasks">Desired # of Tasks per Service:</label>
+                    <input type="number" id="desiredTasks" name="desiredTasks">
+                </div>
+
+                <div class="input-group">
+                    <label for="maxTasks">Max # of Tasks per Service:</label>
+                    <input type="number" id="maxTasks" name="maxTasks">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="vCPUPerTask">vCPU per Task:</label>
+                    <input type="number" id="vCPUPerTask" name="vCPUPerTask" step="0.25">
+                </div>
+
+                <div class="input-group">
+                    <label for="memoryPerTask">Memory per Task (MB):</label>
+                    <input type="number" id="memoryPerTask" name="memoryPerTask" step="512">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="configuredVcpu">Configured vCPU for Fargate:</label>
+                    <input type="number" id="configuredVcpu" name="configuredVcpu" step="1">
+                </div>
+            
+                <div class="input-group">
+                    <label for="configuredMemory">Configured Memory for Fargate (MB):</label>
+                    <input type="number" id="configuredMemory" name="configuredMemory" step="1024">
+                </div>
+            </div>
+
+            <input type="button" value="Calculate" onclick="calculateAutoscaling()">
+        </form>
+        <h2>Results</h2>
+        <div id="result"></div>
+        <div class="disclaimer">
+            <h2>Disclaimer</h2>
+            <p>Use of this Autoscaling Calculator is at your own risk. This tool is provided 'as is' without any guarantees or warranty. While efforts have been made to ensure the accuracy of the calculations, users are advised to verify the results independently. Our company is not responsible for any consequences arising from the use of this tool.</p>
+        </div>        
+        <div id="contact">
+            <h2>Need help?</h2>
+            <script charset="utf-8" type="text/javascript" src="//js.hsforms.net/forms/embed/v2.js"></script>
+            <script>
+            hbspt.forms.create({
+                region: "na1",
+                portalId: "20011707",
+                formId: "84c4e713-3e56-433a-b81b-40d3847817a7"
+            });
+            </script>
+        </div>
+        <div id="references">
+            <h2>References</h2>
+            <ul>
+                <li>AWS ECS Fargate- Compute Capacity Planning - <a href="https://conchchow.medium.com/aws-ecs-fargate-compute-capacity-planning-a5025cb40bd0" target="_blank">Link ↗</a></li>
+                <li>The best practices with regard to CPU threshold for autoscaling AWS resources. - <a href="https://medium.com/@ritika.adequate/the-best-practices-with-regard-to-cpu-threshold-for-autoscaling-aws-resources-db314d2788a6" target="_blank">Link ↗</a></li>
+                <li>Amazon ECS on AWS Fargate - <a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html#fargate-tasks-size">Link ↗</a></li>
+                <li>Step scaling policies - <a href="https://docs.aws.amazon.com/AmazonECS/latest/userguide/service-autoscaling-stepscaling.html">Link ↗</a></li>
+                <li>Use target tracking to scale container deployments with Amazon ECS - <a href="https://containersonaws.com/pattern/target-tracking-scale-ecs-service-cloudformation">Link ↗</a></li>
+                <li>The Big Problem with AWS Fargate and Auto Scaling - <a href="https://medium.com/ancestry-product-and-technology/the-big-problem-with-aws-fargate-and-autoscaling-194ed8a44cc1" target="_blank">Link ↗</a></li>
+            </ul>
+        </div>
+    </div>
+    <footer>
+        <div class="footer-container">
+            <p>Disclaimer: The tools provided on this site are for informational purposes only. Use them at your own risk. KeyQ, Inc. is not responsible for any consequences arising from their use.</p>
+            <p>&copy; 2020-2024 KeyQ, Inc. All rights reserved.</p>
+        </div>
+    </footer>   
+    <script>
+        function calculateAutoscaling() {
+            var appLoadSize = document.getElementById('appLoadSize').value;
+            var minTasks = parseFloat(document.getElementById('minTasks').value);
+            var desiredTasks = parseFloat(document.getElementById('desiredTasks').value);
+            var maxTasks = parseFloat(document.getElementById('maxTasks').value);
+            var vCPUPerTask = parseFloat(document.getElementById('vCPUPerTask').value);
+            var memoryPerTask = parseFloat(document.getElementById('memoryPerTask').value);
+            var users = parseFloat(document.getElementById('users').value);
+            var configuredVcpu = parseFloat(document.getElementById('configuredVcpu').value);
+            var configuredMemory = parseFloat(document.getElementById('configuredMemory').value);
+
+            // Base thresholds depending on App Load Size
+            var baseCpuThreshold, baseMemoryThreshold;
+            switch (appLoadSize) {
+                case "Small":
+                    baseCpuThreshold = 70; // Example: 70% for small load
+                    baseMemoryThreshold = 70; // Example: 70% for small load
+                    break;
+                case "Medium":
+                    baseCpuThreshold = 60; // Example: 50% for medium load
+                    baseMemoryThreshold = 60; // Example: 50% for medium load
+                    break;
+                case "Large":
+                    baseCpuThreshold = 50; // Example: 30% for large load
+                    baseMemoryThreshold = 50; // Example: 30% for large load
+                    break;
+            }
+
+            // Adjust thresholds based on task count and resource allocation
+            var taskScalingFactor = (desiredTasks / minTasks) * users;
+            var cpuUsageCapacity = ((taskScalingFactor * vCPUPerTask) / configuredVcpu) * 100;
+            var memoryUsageCapacity = ((taskScalingFactor * memoryPerTask) / configuredMemory) * 100;
+            var cpuScalingFactor = cpuUsageCapacity / 100;
+            var memoryScalingFactor = memoryUsageCapacity / 100;
+
+            var cpuThreshold = cpuScalingFactor < 1 ? baseCpuThreshold : Math.max(baseCpuThreshold / cpuScalingFactor, 10);
+            var memoryThreshold = memoryScalingFactor < 1 ? baseMemoryThreshold : Math.max(baseMemoryThreshold / memoryScalingFactor, 10);
+
+            // Display the result
+            var resultText = "CPU Capacity at: " + cpuUsageCapacity.toFixed(2) + "%<br>";
+            resultText += "Memory Capacity at: " + memoryUsageCapacity.toFixed(2) + "%<br>";
+            resultText += "Recommended CPU Threshold: " + cpuThreshold.toFixed(2) + "%<br>";
+            resultText += "Recommended Memory Threshold: " + memoryThreshold.toFixed(2) + "%";
+            document.getElementById('result').innerHTML = resultText;
+        }
+    </script>
+</body>
+
+</html>
